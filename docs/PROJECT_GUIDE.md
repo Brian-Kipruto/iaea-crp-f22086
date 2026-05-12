@@ -1,7 +1,7 @@
 # cttwin — Project Guide
 
 > Master reference for Kenya's simulation contribution to IAEA CRP F22086.
-> This is the document you read first. Everything else (README, architecture
+> Read this forst!! Everything else (README, architecture
 > notes, validation reports) is derived from or elaborates on this.
 
 **Status:** Active draft, Phase 0 → Phase 1.

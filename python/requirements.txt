@@ -1,0 +1,17 @@
+# Core numerics
+numpy>=1.24,<2.0
+scipy>=1.10
+
+# CT reconstruction
+# tomopy and astra-toolbox install via conda more reliably than pip;
+# see docs/setup.md for the recommended conda environment.
+tomopy>=1.14
+# astra-toolbox>=2.1   # install via conda: conda install -c astra-toolbox astra-toolbox
+
+# Plotting and notebooks
+matplotlib>=3.7
+jupyter>=1.0
+
+# Data I/O
+pandas>=2.0
+h5py>=3.9

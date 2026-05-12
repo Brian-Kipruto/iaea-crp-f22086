@@ -1,0 +1,14 @@
+# full_scan_template.mac — template filled in by python/run_scan.py
+#
+# Implementation lands in Pass 5.
+#
+# The Python driver substitutes {{ANGLE}}, {{TRANSLATION}}, {{N_PHOTONS}},
+# {{OUTPUT_FILE}} for each (angle, translation) pair and runs cttwin once
+# per projection.
+#
+# Expected contents:
+#   /cttwin/phantom select {{PHANTOM}}
+#   /cttwin/source setAngle {{ANGLE}} deg
+#   /cttwin/source setTranslation {{TRANSLATION}} mm
+#   /cttwin/output setFile {{OUTPUT_FILE}}
+#   /run/beamOn {{N_PHOTONS}}

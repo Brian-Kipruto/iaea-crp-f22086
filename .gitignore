@@ -1,0 +1,49 @@
+# Build artifacts
+build/
+*.o
+*.a
+*.so
+*.dylib
+*.exe
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# Geant4 runtime output
+*.heprep
+*.wrl
+*.prim
+G4PARTICLEXSDATA*
+currentEvent.rndm
+currentRun.rndm
+
+# ROOT output
+*.root
+
+# Simulation data (large, regenerable, not source-of-truth)
+data/raw/*
+data/sinograms/*
+data/reconstructions/*
+!data/raw/.gitkeep
+!data/sinograms/.gitkeep
+!data/reconstructions/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*~
+
+# Local environment overrides
+.env
+local.cmake

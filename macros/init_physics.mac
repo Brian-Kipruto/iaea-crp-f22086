@@ -1,0 +1,8 @@
+# init_physics.mac — physics initialization
+#
+# Implementation lands in Pass 3.
+#
+# Expected contents:
+#   /run/initialize
+#   /process/em/verbose 0
+#   (physics list G4EmStandardPhysics_option4 is selected in C++, not here)

@@ -1,0 +1,10 @@
+# single_projection.mac — fire a single projection for sanity checking
+#
+# Implementation lands in Pass 4 (after the messenger is in place).
+#
+# Expected contents:
+#   /cttwin/phantom select pipe
+#   /cttwin/source setX -150 mm
+#   /cttwin/source setAngle 0 deg
+#   /cttwin/source setTranslation 0 mm
+#   /run/beamOn 100000

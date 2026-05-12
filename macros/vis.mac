@@ -1,0 +1,11 @@
+# vis.mac — interactive visualization setup
+#
+# Loaded when cttwin is launched without a batch macro argument.
+# Implementation lands in Pass 1.
+#
+# Expected contents:
+#   - /vis/open OGL
+#   - /vis/drawVolume
+#   - /vis/viewer/set/viewpointThetaPhi
+#   - /vis/scene/add/trajectories smooth
+#   - /vis/scene/add/hits

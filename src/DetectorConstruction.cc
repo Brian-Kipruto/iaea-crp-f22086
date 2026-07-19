@@ -1,5 +1,6 @@
 #include "DetectorConstruction.hh"
 #include "Constants.hh"
+#include "SensitiveDetector.hh"
 
 #include "G4Material.hh"
 #include "G4NistManager.hh"
@@ -11,6 +12,7 @@
 #include "G4ThreeVector.hh"
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
+#include "G4SDManager.hh"
 
 namespace CTTwin
 {
@@ -52,15 +54,24 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // ─── CTTWIN START: Pass 0 — one active phantom at origin ───
   // v1 placed BOTH phantoms side by side at x = +/-160 mm. Rotation in the
   // CT scan is about the origin, so the active phantom must sit there.
-  if (fActivePhantom == "bars") {
+  // Pass 1 adds "none": an empty world for the detector checkpoint and the
+  // later open-beam N0 reference.
+  if (fActivePhantom == "none") {
+    // no phantom — empty world
+  } else if (fActivePhantom == "bars") {
     BuildBarsPhantom(logicWorld);
   } else {
     BuildPipePhantom(logicWorld);   // default: Option A
   }
   // ─── CTTWIN END ───
 
+  // ─── CTTWIN START: Pass 1 — detector volume ───
+  BuildDetector(logicWorld);
+  // ─── CTTWIN END ───
+
   // NOTE: no fScoringVolume. v1 set fScoringVolume = logicPipe and scored dose
-  // in the object. The detector is a separate volume added in Pass 1.
+  // in the object. The detector is a separate volume (below), counted by a
+  // SensitiveDetector — not dose in the phantom.
 
   return physWorld;
 }
@@ -144,6 +155,43 @@ G4LogicalVolume* DetectorConstruction::BuildBarsPhantom(G4LogicalVolume* world)
   }
 
   return lCenter;
+}
+
+// -----------------------------------------------------------------------------
+// Pass 1 — idealised photon counter. A thin AIR box on the far side of the
+// phantom from the source, its face normal to the beam (+x). Air so it counts
+// arrivals without attenuating; the SensitiveDetector does the counting.
+G4LogicalVolume* DetectorConstruction::BuildDetector(G4LogicalVolume* world)
+{
+  G4Material* air = G4Material::GetMaterial("G4_AIR");
+
+  const G4double halfX = Geometry::kDetectorThickness / 2.0;  // thin along beam
+  const G4double halfY = Geometry::kDetectorFace / 2.0;
+  const G4double halfZ = Geometry::kDetectorFace / 2.0;
+
+  auto* solidDet = new G4Box("Detector", halfX, halfY, halfZ);
+  fDetectorLV = new G4LogicalVolume(solidDet, air, "Detector");
+
+  auto* vis = new G4VisAttributes(G4Colour(1.0, 1.0, 0.0, 0.3));  // yellow, transparent
+  vis->SetForceSolid(true);
+  fDetectorLV->SetVisAttributes(vis);
+
+  // Placed at +kIsoToDetector on the beam axis, opposite the source (-x side).
+  new G4PVPlacement(nullptr, G4ThreeVector(Geometry::kIsoToDetector, 0, 0),
+                    fDetectorLV, "PhysDetector", world, false, 0, true);
+
+  return fDetectorLV;
+}
+
+// -----------------------------------------------------------------------------
+// Pass 1 — attach the SensitiveDetector. Done here, NOT in Construct(), because
+// in multithreaded mode ConstructSDandField() is called per worker thread and
+// is the thread-safe hook for SD registration.
+void DetectorConstruction::ConstructSDandField()
+{
+  auto* sd = new SensitiveDetector("CTTwin/Detector");
+  G4SDManager::GetSDMpointer()->AddNewDetector(sd);
+  SetSensitiveDetector(fDetectorLV, sd);
 }
 
 }  // namespace CTTwin

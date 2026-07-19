@@ -74,10 +74,16 @@ decoupled architecture, translate–rotate geometry, the idealised detector.
   the CTTwin namespace, set the EM physics list, one phantom at the origin
 - [`pass-0-port-retrospective.md`](./features/pass-0-port-retrospective.md) —
   the duplicate-file mess, the QBBC catch, carry-forwards
+- [`pass-1-sensitive-detector.md`](./features/pass-1-sensitive-detector.md) —
+  the idealised photon counter, detector volume, and the SD→EventAction→RunAction count chain
+- [`pass-1-sensitive-detector-retrospective.md`](./features/pass-1-sensitive-detector-retrospective.md) —
+  the exactly-half diagnostic, pull-over-push, the empty-world config wrinkle
 
 ### Validation
 - [`pass-0-port.md`](./validation/pass-0-port.md) — build + run + overlap
   verification for the ported skeleton
+- [`pass-1-detector.md`](./validation/pass-1-detector.md) — 10k photons empty
+  world → 0.9978 detected; pipe cross-check 0.5012
 
 ### Decisions
 - [`0001-physics-list-emstandard-option4.md`](./decisions/0001-physics-list-emstandard-option4.md)

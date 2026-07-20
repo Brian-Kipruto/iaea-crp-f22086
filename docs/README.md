@@ -78,12 +78,18 @@ decoupled architecture, translate–rotate geometry, the idealised detector.
   the idealised photon counter, detector volume, and the SD→EventAction→RunAction count chain
 - [`pass-1-sensitive-detector-retrospective.md`](./features/pass-1-sensitive-detector-retrospective.md) —
   the exactly-half diagnostic, pull-over-push, the empty-world config wrinkle
+- [`pass-2-pencil-beam.md`](./features/pass-2-pencil-beam.md) —
+  the collimated zero-width pencil beam replacing the placeholder, aimed at the in-line pixel
+- [`pass-2-pencil-beam-retrospective.md`](./features/pass-2-pencil-beam-retrospective.md) —
+  the almost-no-code surprise, deciding idealisations before GO, trusting a small diff
 
 ### Validation
 - [`pass-0-port.md`](./validation/pass-0-port.md) — build + run + overlap
   verification for the ported skeleton
 - [`pass-1-detector.md`](./validation/pass-1-detector.md) — 10k photons empty
   world → 0.9978 detected; pipe cross-check 0.5012
+- [`pass-2-pencil-beam.md`](./validation/pass-2-pencil-beam.md) — pencil beam
+  samples a line integral: empty world 0.9978 (≡ Pass 1), pipe 0.5012 drop
 
 ### Decisions
 - [`0001-physics-list-emstandard-option4.md`](./decisions/0001-physics-list-emstandard-option4.md)

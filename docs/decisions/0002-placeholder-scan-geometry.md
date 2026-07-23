@@ -1,7 +1,10 @@
 # 0002 — Placeholder scan geometry: symmetric 150/150 mm source–iso–detector
 
-**Status:** Accepted as a placeholder, 2026-07-19. **Must be revisited before
-Pass 3** — Pass 3 quotes validation numbers against this geometry.
+**Status:** ~~Accepted as a placeholder, 2026-07-19~~ — **SUPERSEDED by
+[ADR 0003](./0003-real-scan-geometry-500mm-sdd.md) on 2026-07-20**, when
+Dr. Kairu confirmed the real rig geometry (500 mm SDD, symmetric). The
+deadline this ADR set — resolve before Pass 3 — was met. The record below is
+left unchanged as the frozen account of why the placeholder existed.
 
 ## Context
 

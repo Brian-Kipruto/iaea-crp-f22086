@@ -2,6 +2,15 @@
 
 > Date: 2026-07-19. Geant4 11.2.1 (MT). Commit `<fill after push>`.
 
+> **Geometry note (added 2026-07-20).** The numbers on this page were measured
+> at the ADR 0002 placeholder geometry: 150/150 mm, 300 mm SDD. That geometry
+> was superseded on 2026-07-20 by the confirmed hardware value (500 mm SDD,
+> symmetric — see [ADR 0003](../decisions/0003-real-scan-geometry-500mm-sdd.md)).
+> These figures stay as the frozen record of what was true then; the *current*
+> regression anchors are in
+> [validation/geometry-update-500mm-sdd.md](./geometry-update-500mm-sdd.md).
+
+
 First pass with a real measured number. The detector is verified in isolation
 (empty world) before any transmission physics is trusted.
 

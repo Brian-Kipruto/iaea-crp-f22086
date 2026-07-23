@@ -90,12 +90,17 @@ decoupled architecture, translate–rotate geometry, the idealised detector.
   world → 0.9978 detected; pipe cross-check 0.5012
 - [`pass-2-pencil-beam.md`](./validation/pass-2-pencil-beam.md) — pencil beam
   samples a line integral: empty world 0.9978 (≡ Pass 1), pipe 0.5012 drop
+- [`geometry-update-500mm-sdd.md`](./validation/geometry-update-500mm-sdd.md) —
+  anchors re-baselined after the SDD change; **current** regression figures
 
 ### Decisions
 - [`0001-physics-list-emstandard-option4.md`](./decisions/0001-physics-list-emstandard-option4.md)
   — why `G4EmStandardPhysics_option4` replaces v1's `QBBC`
 - [`0002-placeholder-scan-geometry.md`](./decisions/0002-placeholder-scan-geometry.md)
   — the symmetric 150/150 mm source–iso–detector placeholder, and what it blocks
+  (**superseded by 0003**)
+- [`0003-real-scan-geometry-500mm-sdd.md`](./decisions/0003-real-scan-geometry-500mm-sdd.md)
+  — confirmed hardware geometry: symmetric 250/250 mm, 500 mm SDD; supersedes 0002
 
 ### Troubleshooting
 - [`001-multiple-definition-of-main.md`](./troubleshooting/001-multiple-definition-of-main.md)

@@ -1,6 +1,6 @@
 # Validation — Geometry update to 500 mm SDD (re-baselined anchors)
 
-> Date: 2026-07-20. Geant4 11.2.1 (MT). Commit `<fill after push>`.
+> Date: 2026-07-20. Geant4 11.2.1 (MT). Commit `ab9e4ba`.
 > Geometry: symmetric 250/250 mm, **500 mm SDD** ([ADR 0003](../decisions/0003-real-scan-geometry-500mm-sdd.md)),
 > superseding the 150/150 mm placeholder.
 

@@ -1,6 +1,6 @@
 # Validation — Pass 1 (SensitiveDetector + detector volume)
 
-> Date: 2026-07-19. Geant4 11.2.1 (MT). Commit `<fill after push>`.
+> Date: 2026-07-19. Geant4 11.2.1 (MT). Commit `c8a40f0`.
 
 > **Geometry note (added 2026-07-20).** The numbers on this page were measured
 > at the ADR 0002 placeholder geometry: 150/150 mm, 300 mm SDD. That geometry

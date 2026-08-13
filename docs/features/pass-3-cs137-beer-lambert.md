@@ -1,6 +1,6 @@
 # Pass 3 — Cs-137 formalised, flat slab, Beer–Lambert validation
 
-> Date: 2026-08-13. Commit `<fill after push>`. Parent: `cd3b868`.
+> Date: 2026-08-13. Commit `16c8006`. Parent: `cd3b868`.
 > Checkpoint: **2% Beer–Lambert agreement at 5/10/20/40 mm — met, worst case +0.746%.**
 > Numbers: [validation/pass-3-beer-lambert.md](../validation/pass-3-beer-lambert.md).
 > Decisions: [ADR 0004](../decisions/0004-beer-lambert-reference-and-acceptance.md).

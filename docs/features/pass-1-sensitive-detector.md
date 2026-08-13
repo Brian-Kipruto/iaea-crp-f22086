@@ -1,6 +1,6 @@
 # Pass 1 — SensitiveDetector + detector volume
 
-> Status: Complete 2026-07-19. Commit `<fill after push>` on `main`. Geant4 11.2.1.
+> Status: Complete 2026-07-19. Commit `c8a40f0` on `main`. Geant4 11.2.1.
 
 ## What it does
 

@@ -12,10 +12,13 @@ namespace CTTwin
 class RunAction;
 class SensitiveDetector;
 
-/// At the end of each event, pulls the per-event count from the
-/// SensitiveDetector and hands it to RunAction for run-level accumulation.
+/// At the end of each event, pulls the per-event counts from the
+/// SensitiveDetector and hands them to RunAction for run-level accumulation.
 /// Holds a RunAction* (constructed in ActionInitialization) — the standard
 /// Geant4 per-event -> per-run bridge, same shape v1 used for dose.
+///
+/// Pass 3: two counts now travel this bridge — total arrivals and the
+/// unscattered-primary subset. Same pull pattern, one extra call.
 class EventAction : public G4UserEventAction
 {
   public:

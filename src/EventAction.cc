@@ -27,7 +27,7 @@ SensitiveDetector* EventAction::FindDetector()
 
 void EventAction::BeginOfEventAction(const G4Event*)
 {
-  // SD resets its own count in its Initialize(); nothing to do here.
+  // SD resets its own counts in its Initialize(); nothing to do here.
 }
 
 void EventAction::EndOfEventAction(const G4Event*)
@@ -35,6 +35,9 @@ void EventAction::EndOfEventAction(const G4Event*)
   auto* det = FindDetector();
   if (det && fRunAction) {
     fRunAction->AddCount(det->GetCount());
+    // ─── CTTWIN START: Pass 3 unscattered count ───
+    fRunAction->AddUnscattered(det->GetUnscatteredCount());
+    // ─── CTTWIN END ───
   }
 }
 

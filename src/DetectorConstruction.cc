@@ -1,4 +1,5 @@
 #include "DetectorConstruction.hh"
+#include "DetectorMessenger.hh"
 #include "Constants.hh"
 #include "SensitiveDetector.hh"
 
@@ -18,6 +19,19 @@ namespace CTTwin
 {
 
 // -----------------------------------------------------------------------------
+// ─── CTTWIN START: Pass 3 messenger ownership ───
+DetectorConstruction::DetectorConstruction()
+{
+  fMessenger = new DetectorMessenger(this);
+}
+
+DetectorConstruction::~DetectorConstruction()
+{
+  delete fMessenger;
+}
+// ─── CTTWIN END ───
+
+// -----------------------------------------------------------------------------
 void DetectorConstruction::DefineMaterials()
 {
   G4NistManager* nist = G4NistManager::Instance();
@@ -28,6 +42,12 @@ void DetectorConstruction::DefineMaterials()
   // Custom carbon steel (~99% Fe, ~1% C by mass). Carried verbatim from v1 —
   // the material the Beer-Lambert numbers will be quoted against. See
   // [[Materials & Cross-Sections]] / Architecture Lockdown.
+  //
+  // Pass 3 note: the analytical reference mu/rho is computed for THIS
+  // composition (0.99 x Fe + 0.01 x C by mass), not for pure iron. The
+  // difference is small (+0.05% at 662 keV, since carbon's Z/A is higher) but
+  // it is computed rather than waved away — see python/xcom_reference.py and
+  // ADR 0004. If this composition ever changes, that reference changes with it.
   if (!G4Material::GetMaterial("CarbonSteel", false)) {
     G4Element* elFe = nist->FindOrBuildElement("Fe");
     G4Element* elC  = nist->FindOrBuildElement("C");
@@ -55,11 +75,13 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // v1 placed BOTH phantoms side by side at x = +/-160 mm. Rotation in the
   // CT scan is about the origin, so the active phantom must sit there.
   // Pass 1 adds "none": an empty world for the detector checkpoint and the
-  // later open-beam N0 reference.
+  // later open-beam N0 reference. Pass 3 adds "slab".
   if (fActivePhantom == "none") {
     // no phantom — empty world
   } else if (fActivePhantom == "bars") {
     BuildBarsPhantom(logicWorld);
+  } else if (fActivePhantom == "slab") {
+    BuildSlabPhantom(logicWorld);
   } else {
     BuildPipePhantom(logicWorld);   // default: Option A
   }
@@ -158,6 +180,48 @@ G4LogicalVolume* DetectorConstruction::BuildBarsPhantom(G4LogicalVolume* world)
 }
 
 // -----------------------------------------------------------------------------
+// ─── CTTWIN START: Pass 3 — flat slab Beer-Lambert phantom ───
+// A flat carbon-steel slab centred on the rotation axis, its thickness running
+// along the beam axis (+x). The on-axis pencil ray therefore traverses exactly
+// fSlabThickness of steel — a single, exactly-known path length, which is the
+// whole point. The pipe wall was rejected for this test because the chord
+// through a curved wall depends on where the ray enters.
+//
+// Placement: centred at the origin, so the slab spans x in [-t/2, +t/2]. The
+// rotation axis passes through it, which keeps the slab consistent with every
+// other phantom's convention even though Pass 3 never rotates anything.
+//
+// Lateral size is fixed (not a function of thickness) so that changing t
+// changes exactly one thing. At 100 mm it is comfortably wider than the 50.8 mm
+// detector face, so no ray reaching the detector can have travelled around the
+// slab edge.
+G4LogicalVolume* DetectorConstruction::BuildSlabPhantom(G4LogicalVolume* world)
+{
+  G4Material* steel = G4Material::GetMaterial("CarbonSteel");
+
+  const G4double halfX = fSlabThickness / 2.0;              // along the beam
+  const G4double halfY = Geometry::kSlabLateral / 2.0;
+  const G4double halfZ = Geometry::kSlabLateral / 2.0;
+
+  auto* solidSlab = new G4Box("SolidSlab", halfX, halfY, halfZ);
+  auto* logicSlab = new G4LogicalVolume(solidSlab, steel, "LogicSlab");
+
+  auto* vis = new G4VisAttributes(G4Colour(0.6, 0.6, 0.7, 0.5));
+  vis->SetForceSolid(true);
+  logicSlab->SetVisAttributes(vis);
+
+  new G4PVPlacement(nullptr, G4ThreeVector(0, 0, 0), logicSlab,
+                    "PhysSlab", world, false, 0, true);
+
+  G4cout << "[CTTwin] slab phantom built: " << fSlabThickness / mm
+         << " mm carbon steel along +x, " << Geometry::kSlabLateral / mm
+         << " x " << Geometry::kSlabLateral / mm << " mm lateral" << G4endl;
+
+  return logicSlab;
+}
+// ─── CTTWIN END ───
+
+// -----------------------------------------------------------------------------
 // Pass 1 — idealised photon counter. A thin AIR box on the far side of the
 // phantom from the source, its face normal to the beam (+x). Air so it counts
 // arrivals without attenuating; the SensitiveDetector does the counting.
@@ -187,10 +251,23 @@ G4LogicalVolume* DetectorConstruction::BuildDetector(G4LogicalVolume* world)
 // Pass 1 — attach the SensitiveDetector. Done here, NOT in Construct(), because
 // in multithreaded mode ConstructSDandField() is called per worker thread and
 // is the thread-safe hook for SD registration.
+//
+// Pass 3: look the SD up before creating one. ConstructSDandField() can be
+// invoked more than once per thread if the geometry is ever rebuilt; creating a
+// second SD under the same name leaks and produces a duplicate-name warning.
+// Cheap insurance, no behaviour change on the normal single-build path.
 void DetectorConstruction::ConstructSDandField()
 {
+  auto* sdManager = G4SDManager::GetSDMpointer();
+
+  auto* existing = sdManager->FindSensitiveDetector("CTTwin/Detector", false);
+  if (existing) {
+    SetSensitiveDetector(fDetectorLV, existing);
+    return;
+  }
+
   auto* sd = new SensitiveDetector("CTTwin/Detector");
-  G4SDManager::GetSDMpointer()->AddNewDetector(sd);
+  sdManager->AddNewDetector(sd);
   SetSensitiveDetector(fDetectorLV, sd);
 }
 

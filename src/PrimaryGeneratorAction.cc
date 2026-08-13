@@ -36,10 +36,25 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
   //     A finite spot would sample a spread of chords and blur Beer-Lambert.
   //   * Source-Y translation (scan motion) is fixed at 0 here; the SetSourceY
   //     hook arrives in Pass 4 with the DetectorMessenger that drives it.
+  // ─── CTTWIN END ───
+
+  // ─── CTTWIN START: Pass 3 Cs-137 source, formalised ───
+  // Architecture Lockdown #1 made flesh. Pass 2 carried 662 keV as a literal
+  // here; the energy now comes from Physics::kCs137GammaEnergy and exists in
+  // exactly one place in the codebase.
   //
-  // Energy: Cs-137's 662 keV single line. Set here so the app is physically
-  // meaningful now; formalised as a locked source choice in Pass 3.
-  fParticleGun->SetParticleEnergy(662.0 * keV);
+  // Why that matters beyond tidiness: the Beer-Lambert test compares this
+  // energy against mu/rho evaluated at the SAME energy. The recurring scar is
+  // "keep energy <-> mu/rho in sync". A literal duplicated across files is how
+  // they drift apart, and the resulting failure looks like a physics bug rather
+  // than a bookkeeping one. python/xcom_reference.py evaluates mu/rho at
+  // 661.657 keV precisely because that is the value below. Change one, change
+  // both — and re-run the validation. See ADR 0004.
+  //
+  // Not modelled: the ~32 keV Ba-137m X-rays (absorbed in the source housing).
+  // Not modelled: v1's Ir-192 3-line spectrum and 30 deg cone, deliberately
+  // discarded in Pass 2 and not coming back.
+  fParticleGun->SetParticleEnergy(Physics::kCs137GammaEnergy);
   fParticleGun->SetParticlePosition(
       G4ThreeVector(-Geometry::kSourceToIso, 0.0, 0.0));
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(1.0, 0.0, 0.0));

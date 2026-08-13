@@ -82,6 +82,12 @@ decoupled architecture, translate–rotate geometry, the idealised detector.
   the collimated zero-width pencil beam replacing the placeholder, aimed at the in-line pixel
 - [`pass-2-pencil-beam-retrospective.md`](./features/pass-2-pencil-beam-retrospective.md) —
   the almost-no-code surprise, deciding idealisations before GO, trusting a small diff
+- [`pass-3-cs137-beer-lambert.md`](./features/pass-3-cs137-beer-lambert.md) —
+  Cs-137 formalised at 661.657 keV, the flat slab phantom, the minimal messenger
+  pulled forward from Pass 4, and unscattered-primary counting
+- [`pass-3-cs137-beer-lambert-retrospective.md`](./features/pass-3-cs137-beer-lambert-retrospective.md) —
+  the error budget that nearly lost the pass, the known-answer checkpoint, why
+  fitting mu beat checking four endpoints, the nested-sample artefact
 
 ### Validation
 - [`pass-0-port.md`](./validation/pass-0-port.md) — build + run + overlap
@@ -92,6 +98,11 @@ decoupled architecture, translate–rotate geometry, the idealised detector.
   samples a line integral: empty world 0.9978 (≡ Pass 1), pipe 0.5012 drop
 - [`geometry-update-500mm-sdd.md`](./validation/geometry-update-500mm-sdd.md) —
   anchors re-baselined after the SDD change; **current** regression figures
+- [`pass-3-beer-lambert.md`](./validation/pass-3-beer-lambert.md) —
+  **the headline Phase 1 result.** 2% agreement met at 5/10/20/40 mm (worst
+  +0.746%); fitted mu = 0.5761682 /cm, reduced chi2 = 1.33; measured scatter
+  contamination; photons-per-projection budget. The table the NUTECH 2026 paper
+  cites, and the basis of the TRL 3 claim
 
 ### Decisions
 - [`0001-physics-list-emstandard-option4.md`](./decisions/0001-physics-list-emstandard-option4.md)
@@ -101,6 +112,10 @@ decoupled architecture, translate–rotate geometry, the idealised detector.
   (**superseded by 0003**)
 - [`0003-real-scan-geometry-500mm-sdd.md`](./decisions/0003-real-scan-geometry-500mm-sdd.md)
   — confirmed hardware geometry: symmetric 250/250 mm, 500 mm SDD; supersedes 0002
+- [`0004-beer-lambert-reference-and-acceptance.md`](./decisions/0004-beer-lambert-reference-and-acceptance.md)
+  — the reference mu/rho derived from NIST rather than remembered, the source
+  energy fixed at 661.657 keV in one place, and the 2% criterion applied to the
+  unscattered count against a measured open-beam N0
 
 ### Troubleshooting
 - [`001-multiple-definition-of-main.md`](./troubleshooting/001-multiple-definition-of-main.md)

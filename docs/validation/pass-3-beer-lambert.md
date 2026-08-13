@@ -1,7 +1,7 @@
 # Validation — Pass 3: Beer–Lambert attenuation
 
 > Date: 2026-08-13. Geant4 11.2.1 (MT), `G4EmStandardPhysics_option4`.
-> Code commit: `<fill after push>`.
+> Code commit: `16c8006`.
 > Geometry: symmetric 250/250 mm, 500 mm SDD ([ADR 0003](../decisions/0003-real-scan-geometry-500mm-sdd.md)).
 > Reference and acceptance definitions: [ADR 0004](../decisions/0004-beer-lambert-reference-and-acceptance.md).
 

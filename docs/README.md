@@ -88,6 +88,12 @@ decoupled architecture, translate–rotate geometry, the idealised detector.
 - [`pass-3-cs137-beer-lambert-retrospective.md`](./features/pass-3-cs137-beer-lambert-retrospective.md) —
   the error budget that nearly lost the pass, the known-answer checkpoint, why
   fitting mu beat checking four endpoints, the nested-sample artefact
+- [`pass-4-scan-motion.md`](./features/pass-4-scan-motion.md) —
+  the scan transform carried by the phantom, runtime geometry motion, the full
+  `/cttwin/scan/` + `/cttwin/output/` messenger, and the per-projection CSV
+- [`pass-4-scan-motion-retrospective.md`](./features/pass-4-scan-motion-retrospective.md) —
+  the landmine that dissolved instead of being fixed, the theta = 360 code-path
+  discriminator, two ~2.8 sigma flags chased to ground, the seed scar made visible
 
 ### Validation
 - [`pass-0-port.md`](./validation/pass-0-port.md) — build + run + overlap
@@ -103,6 +109,11 @@ decoupled architecture, translate–rotate geometry, the idealised detector.
   +0.746%); fitted mu = 0.5761682 /cm, reduced chi2 = 1.33; measured scatter
   contamination; photons-per-projection budget. The table the NUTECH 2026 paper
   cites, and the basis of the TRL 3 claim
+- [`pass-4-scan-motion.md`](./validation/pass-4-scan-motion.md) —
+  the seven-rung checkpoint ladder: anchors reproduced **exactly**, pipe
+  rotational invariance, the factor-4 Option B rotation, parallel-beam
+  redundancy at 0.26 sigma, the sign table, bit-for-bit proof against stale
+  geometry, and the CSV contract. Six hand-computed chords agreeing to 0.2-1.5%
 
 ### Decisions
 - [`0001-physics-list-emstandard-option4.md`](./decisions/0001-physics-list-emstandard-option4.md)
@@ -116,8 +127,17 @@ decoupled architecture, translate–rotate geometry, the idealised detector.
   — the reference mu/rho derived from NIST rather than remembered, the source
   energy fixed at 661.657 keV in one place, and the 2% criterion applied to the
   unscattered count against a measured open-beam N0
+- [`0005-phantom-carries-the-scan-transform.md`](./decisions/0005-phantom-carries-the-scan-transform.md)
+  — the phantom carries the scan transform and the rig never moves; scan motion
+  is legal after `/run/initialize`; the detector stays one pixel; and why the
+  equivalence is exact rather than approximate (and when it expires)
 
 ### Troubleshooting
 - [`001-multiple-definition-of-main.md`](./troubleshooting/001-multiple-definition-of-main.md)
   — duplicate `cttwin.cc` in root and `src/` → linker error, and the CMake
   glob re-configure gotcha behind it
+
+- [`002-delivered-files-land-at-a-flattened-path.md`](./troubleshooting/002-delivered-files-land-at-a-flattened-path.md)
+  — delivered files arriving at a flattened path rather than not arriving; the
+  revised check (verify the path before the run, not the file after the
+  failure), and stale IntelliSense masquerading as real errors

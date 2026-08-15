@@ -1,10 +1,31 @@
-# single_projection.mac — fire a single projection for sanity checking
+# single_projection.mac — fire one projection, for sanity checking.
 #
-# Implementation lands in Pass 4 (after the messenger is in place).
+# Pass 4: this is no longer a stub. Command ordering matters and is the point
+# of the example:
 #
-# Expected contents:
-#   /cttwin/phantom select pipe
-#   /cttwin/source setX -150 mm
-#   /cttwin/source setAngle 0 deg
-#   /cttwin/source setTranslation 0 mm
-#   /run/beamOn 100000
+#   * /cttwin/phantom and /cttwin/slabThickness rebuild solids and MUST come
+#     before /run/initialize. Issued afterwards they are rejected loudly.
+#   * /cttwin/scan/angle and /cttwin/scan/translation only MOVE existing
+#     volumes. They are shown after /run/initialize here precisely because
+#     that is legal, and because it is the ordering python/run_scan.py will
+#     use when it sweeps many measurements inside one process (Pass 5).
+
+/run/verbose      0
+/event/verbose    0
+/tracking/verbose 0
+
+# --- geometry: pre-init ---
+/cttwin/phantom bars
+/run/initialize
+
+# --- scan coordinates: any time ---
+/cttwin/scan/angle       0 deg
+/cttwin/scan/translation 0 mm
+
+# --- output: also any time. Path is relative to the working directory, so
+# --- this assumes cttwin was launched from build/. Omit these two lines and
+# --- no file is written, which is the default everywhere else.
+/cttwin/output/file ../data/raw/single_projection.csv
+/cttwin/output/projectionId 0
+
+/run/beamOn 100000

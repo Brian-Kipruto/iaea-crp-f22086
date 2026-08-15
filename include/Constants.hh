@@ -54,6 +54,38 @@ constexpr G4double kSlabLateral          = 100.0 * mm;  // full width in y and z
 constexpr G4double kDefaultSlabThickness =  10.0 * mm;  // overridden by /cttwin/slabThickness
 // ─── CTTWIN END ───
 
+// ─── CTTWIN START: Pass 4 scan motion ───
+// The scan coordinates of a first-generation translate-rotate CT: a rotation
+// angle theta and a translation offset t. See [[Coordinate Conventions]].
+//
+// IMPLEMENTATION NOTE (ADR 0005): the source and detector NEVER move. The
+// phantom carries the whole scan transform instead. The two are exactly, not
+// approximately, equivalent here because the detector volume is G4_AIR sitting
+// in a G4_AIR world — it is invisible to photon transport, so "small detector
+// that translates" and "detector that sits still while the phantom slides past"
+// are the same transport problem. Consequences: the gun stays at
+// (-kSourceToIso, 0, 0) aimed +x forever, the detector placement is fixed, the
+// beam always lands on the in-line pixel, and the Pass 1-3 regression anchors
+// are unaffected at theta = 0, t = 0.
+//
+// The world transform applied to a phantom point p (expressed in the phantom's
+// own frame, i.e. its position at theta = 0) is
+//
+//     p_world = R_z(theta) * p  -  t * y_hat
+//
+// which is the canonical picture (phantom rotated by theta, rig translated to
+// y = +t) rigidly shifted by -t*y_hat so the rig can stay at y = 0.
+constexpr G4double kDefaultScanAngle       =   0.0 * deg;
+constexpr G4double kDefaultScanTranslation =   0.0 * mm;
+
+// Guard on /cttwin/scan/translation. The largest phantom (Option B baseplate)
+// has a 100 mm radius, so at |t| = 150 mm it still sits 250 mm clear of the
+// 500 mm world half-extent and nowhere near the detector at x = +250 mm. This
+// is a sanity bound, not a physical scan range — the useful range is
+// [-r, +r] with r = phantom radius + margin.
+constexpr G4double kMaxScanTranslation     = 150.0 * mm;
+// ─── CTTWIN END ───
+
 }  // namespace CTTwin::Geometry
 
 

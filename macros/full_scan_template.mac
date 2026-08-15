@@ -1,14 +1,53 @@
-# full_scan_template.mac — template filled in by python/run_scan.py
+# full_scan_template.mac — one ANGLE per macro, filled in by python/run_scan.py.
 #
-# Implementation lands in Pass 5.
+# Pass 5 will substitute {{PHANTOM}}, {{OUTPUT_FILE}}, {{ANGLE}} and
+# {{TRANSLATION_BLOCK}}. The shape below is a consequence of two Pass 4
+# decisions and is worth understanding before changing it.
 #
-# The Python driver substitutes {{ANGLE}}, {{TRANSLATION}}, {{N_PHOTONS}},
-# {{OUTPUT_FILE}} for each (angle, translation) pair and runs cttwin once
-# per projection.
+# ONE PROCESS PER ANGLE, NOT PER MEASUREMENT (ADR 0005 / D2).
+#   /cttwin/scan/... moves existing volumes and is legal after /run/initialize,
+#   so the whole inner translation sweep runs inside one process. A 180 x 128
+#   scan is ~180 launches instead of ~23,000. /cttwin/phantom stays above
+#   /run/initialize because it rebuilds solids and is rejected afterwards.
 #
-# Expected contents:
-#   /cttwin/phantom select {{PHANTOM}}
-#   /cttwin/source setAngle {{ANGLE}} deg
-#   /cttwin/source setTranslation {{TRANSLATION}} mm
-#   /cttwin/output setFile {{OUTPUT_FILE}}
-#   /run/beamOn {{N_PHOTONS}}
+# ONE FILE PER ANGLE.
+#   /cttwin/output/file is set once; each /run/beamOn appends a row and the
+#   header is written only for a new or empty file. 180 files, not 23,040 —
+#   which retires the file-count warning in [[Output Format]] without moving
+#   to HDF5.
+#
+# SEEDS ARE NOT OPTIONAL.
+#   Every cttwin process starts from the same default seed, and runs within a
+#   process draw sequentially from one stream. Without an explicit reseed per
+#   measurement, the same noise realisation repeats at the same position in
+#   every angle's sweep — correlated noise down a column of the sinogram, which
+#   reconstructs into structured artefacts rather than grain. Pass 4 saw this
+#   directly: inserting one extra /run/beamOn into a checkpoint macro shifted
+#   every later run's counts by one position in a fixed sequence.
+#
+# {{TRANSLATION_BLOCK}} expands to one of these per translation step:
+#
+#     /random/setSeeds <s1> <s2>
+#     /cttwin/output/projectionId <id>
+#     /cttwin/scan/translation <t> mm
+#     /run/beamOn <n_photons>
+#
+# THE OPEN BEAM.
+#   Line integrals are -ln(N/N0), so N0 must be measured too. Under ADR 0005
+#   the source and detector never move, so with /cttwin/phantom none there is
+#   nothing in the world that changes with theta or t — every open-beam
+#   measurement is the SAME simulation. One high-statistics open-beam run
+#   suffices for the entire scan; a full open-beam sweep would just be that one
+#   number resampled. Do not skip it, and do not scan it.
+
+/run/verbose      0
+/event/verbose    0
+/tracking/verbose 0
+
+/cttwin/phantom {{PHANTOM}}
+/run/initialize
+
+/cttwin/output/file {{OUTPUT_FILE}}
+/cttwin/scan/angle {{ANGLE}} deg
+
+{{TRANSLATION_BLOCK}}

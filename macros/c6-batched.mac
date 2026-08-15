@@ -1,0 +1,35 @@
+# Checkpoint 6 — the stale-geometry test. Run this, then c6-single-a.mac and
+# c6-single-b.mac as separate processes, and compare.
+#
+# This is the one test that justifies letting the geometry move after
+# /run/initialize. If GeometryHasBeenModified() were missing or ineffective, the
+# second run below would transport photons through the theta = 0 world while
+# reporting theta = 30 — a projection that looks entirely plausible and is
+# wrong, which is the failure mode the vault warns about.
+#
+# The seeds are reset to the SAME value before each beamOn so the comparison is
+# exact rather than statistical. Required:
+#
+#     batched run 1  ==  c6-single-a  (bit for bit)
+#     batched run 2  ==  c6-single-b  (bit for bit)
+#
+# If the equality holds only within statistics under MT, re-run all three with
+# /run/numberOfThreads 1 placed before /run/initialize. Thread scheduling is a
+# separate variable from the geometry question and this removes it.
+
+/run/verbose      0
+/event/verbose    0
+/tracking/verbose 0
+
+/cttwin/phantom bars
+/run/initialize
+
+/cttwin/scan/translation 0 mm
+
+/random/setSeeds 12345 67890
+/cttwin/scan/angle  0 deg
+/run/beamOn 100000
+
+/random/setSeeds 12345 67890
+/cttwin/scan/angle 30 deg
+/run/beamOn 100000

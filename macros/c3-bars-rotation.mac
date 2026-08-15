@@ -1,0 +1,40 @@
+# Checkpoint 3 — THE HEADLINE. Rotation visibly changes the Option B projection.
+#
+# At t = 0 the ray runs through the rotation axis. At theta = 0 it cuts, in
+# order: 30 mm of polyethylene (bar at 180 deg), 40 mm of aluminium (central
+# bar), 20 mm of carbon steel (bar at 0 deg). At theta = 30 deg NO ring bar
+# intersects the ray at all — every one of the six sits at least 30 mm off the
+# line, further than its own radius — so only the 40 mm aluminium core remains.
+#
+# Indicative expectation (mu/rho for Al and poly taken at literature grade, NOT
+# derived by xcom_reference.py — this is a "does it move" checkpoint, not a
+# validation claim):
+#
+#     theta =  0 deg  ->  unscattered fraction ~ 0.11
+#     theta = 30 deg  ->  unscattered fraction ~ 0.45
+#
+# A factor of four. If these two come out equal, the phantom is not rotating.
+#
+# WATCH OUT: theta = 0 and theta = 60 deg give the SAME count here, because the
+# ray then cuts the same 30 mm of poly and 20 mm of steel in the opposite
+# order, and exponential attenuation does not care about order. That is correct
+# physics, not a stuck geometry. Sampling 0 / 60 / 120 would look like failure.
+
+/run/verbose      0
+/event/verbose    0
+/tracking/verbose 0
+
+/cttwin/phantom bars
+/run/initialize
+
+/cttwin/scan/translation 0 mm
+
+/cttwin/scan/angle  0 deg
+/run/beamOn 100000
+
+/cttwin/scan/angle 30 deg
+/run/beamOn 100000
+
+# the order-invariance case described above — expect it to match theta = 0
+/cttwin/scan/angle 60 deg
+/run/beamOn 100000

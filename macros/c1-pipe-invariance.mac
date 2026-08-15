@@ -1,0 +1,39 @@
+# Checkpoint 1 — rotational invariance of the pipe.
+#
+# The pipe is a cylinder about +z. Rotating it about +z is the identity, so the
+# counts MUST NOT depend on theta — at any translation. This is a known-answer
+# test: it needs no reference data to interpret, and it fails loudly if the
+# rotation is about the wrong axis, or if the rotation is quietly dragging a
+# translation along with it.
+#
+# It also exercises the post-init motion path six times in one process, so it
+# doubles as the first evidence that GeometryHasBeenModified() is working.
+#
+# Expect: all four runs at t = 0 agree within statistics; all three runs at
+# t = 40 mm agree within statistics with each other (but NOT with the t = 0
+# group — a chord off-axis through a pipe wall is longer).
+
+/run/verbose      0
+/event/verbose    0
+/tracking/verbose 0
+
+/cttwin/phantom pipe
+/run/initialize
+
+/cttwin/scan/translation 0 mm
+/cttwin/scan/angle   0 deg
+/run/beamOn 100000
+/cttwin/scan/angle  17 deg
+/run/beamOn 100000
+/cttwin/scan/angle  45 deg
+/run/beamOn 100000
+/cttwin/scan/angle  90 deg
+/run/beamOn 100000
+
+/cttwin/scan/translation 40 mm
+/cttwin/scan/angle   0 deg
+/run/beamOn 100000
+/cttwin/scan/angle  33 deg
+/run/beamOn 100000
+/cttwin/scan/angle 137 deg
+/run/beamOn 100000

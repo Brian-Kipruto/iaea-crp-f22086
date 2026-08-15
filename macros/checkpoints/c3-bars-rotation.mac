@@ -1,0 +1,24 @@
+# Checkpoint 3 - THE HEADLINE. Rotation visibly changes the Option B projection.
+# At t=0 and theta=0 the ray cuts 30mm poly (bar at 180deg) + 40mm Al (central
+# bar) + 20mm steel (bar at 0deg). At theta=30deg NO ring bar intersects the ray
+# - all six sit at least 30mm off the line, further than their own radius - so
+# only the 40mm Al core remains.
+# EXPECT (indicative; mu/rho for Al and poly are literature grade, NOT derived
+# by xcom_reference.py - this is a "does it move" test, not a validation claim):
+#     theta =  0 deg -> unscattered fraction ~ 0.11
+#     theta = 30 deg -> unscattered fraction ~ 0.45
+# WATCH OUT: theta=0 and theta=60 give the SAME count. The ray then cuts the
+# same 30mm poly and 20mm steel in the opposite order, and exponential
+# attenuation is order-independent. Correct physics, not a stuck geometry.
+/run/verbose      0
+/event/verbose    0
+/tracking/verbose 0
+/cttwin/phantom bars
+/run/initialize
+/cttwin/scan/translation 0 mm
+/cttwin/scan/angle  0 deg
+/run/beamOn 100000
+/cttwin/scan/angle 30 deg
+/run/beamOn 100000
+/cttwin/scan/angle 60 deg
+/run/beamOn 100000

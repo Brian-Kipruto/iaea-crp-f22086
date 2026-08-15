@@ -31,6 +31,16 @@ class RunAction : public G4UserRunAction
     void AddUnscattered(G4int n) { fUnscatteredCount += n; }
 
   private:
+    // ─── CTTWIN START: Pass 5 projection output ───
+    /// Append one measurement to the per-projection CSV. Master thread only,
+    /// called once per run from EndOfRunAction. Writes the header if and only
+    /// if the file is new or empty, so repeated runs in one process accumulate
+    /// into a single file. See [[Output Format]].
+    void WriteProjectionRow(const G4String& path, G4int projectionId,
+                            G4double angleDeg, G4double translationMM,
+                            G4int total, G4int unscattered, G4int events) const;
+    // ─── CTTWIN END ───
+
     G4Accumulable<G4int> fDetectorCount{0};
     G4Accumulable<G4int> fUnscatteredCount{0};
 };

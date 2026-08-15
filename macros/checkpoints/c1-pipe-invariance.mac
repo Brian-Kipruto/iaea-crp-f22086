@@ -1,0 +1,32 @@
+# Checkpoint 1 - rotational invariance of the pipe.
+# The pipe is a cylinder about +z, so rotating it about +z is the identity and
+# counts MUST NOT depend on theta, at any translation. Known-answer test: needs
+# no reference data. Fails loudly if the rotation is about the wrong axis, or is
+# quietly dragging a translation along with it. Also exercises the post-init
+# motion path six times in one process.
+# EXPECT: the four t=0 runs agree within statistics; the three t=40mm runs agree
+# with each other but NOT with the t=0 group (off-axis chord through a pipe wall
+# is longer).
+/run/verbose      0
+/event/verbose    0
+/tracking/verbose 0
+/cttwin/phantom pipe
+/run/initialize
+/cttwin/scan/translation 0 mm
+/cttwin/scan/angle   0 deg
+/run/beamOn 100000
+/cttwin/scan/angle  17 deg
+/run/beamOn 100000
+/cttwin/scan/angle  45 deg
+/run/beamOn 100000
+/cttwin/scan/angle  90 deg
+/run/beamOn 100000
+/cttwin/scan/angle 360 deg
+/run/beamOn 100000
+/cttwin/scan/translation 40 mm
+/cttwin/scan/angle   0 deg
+/run/beamOn 100000
+/cttwin/scan/angle  33 deg
+/run/beamOn 100000
+/cttwin/scan/angle 137 deg
+/run/beamOn 100000

@@ -1,0 +1,44 @@
+# Checkpoints 2 and 4 - parallel-beam redundancy, and the sign convention.
+# A ring bar at phantom-frame angle phi, radius 60mm, has ray offset
+#     d(phi) = | 60*sin(phi + theta) - t |
+# so it is cut dead centre when 60*sin(phi+theta) = t. At |t| = 60mm that picks
+# out exactly ONE bar: the central Al bar is 60mm off the ray and the baseplate
+# is 75mm below it in z. Steel bars at phi = 0,120,240 (r=10mm); poly at
+# 60,180,300 (r=15mm).
+#
+# CHECKPOINT 4 - the sign table. Which MATERIAL is isolated depends on signs:
+#     theta    t       bar cut    material  chord   EXPECT T ~
+#     +30    +60mm     phi= 60    poly      30mm      0.79
+#     -30    +60mm     phi=120    steel     20mm      0.32
+#     +30    -60mm     phi=240    steel     20mm      0.32
+#     -30    -60mm     phi=300    poly      30mm      0.79
+# Factor 2.5 between poly and steel - unmissable. Pattern backwards means theta
+# and t disagree in sign.
+# HONEST LIMIT: a simultaneous flip of BOTH signs is undetectable - pipe, bars
+# and slab are all mirror-symmetric about the beam axis, so (theta,t) ->
+# (-theta,-t) is an exact symmetry of the object. Relative sign is measurable;
+# absolute convention is fixed by doc only, and bites from Phase 3 on.
+#
+# CHECKPOINT 2 - redundancy. p(theta,t) = p(theta+180, -t), NOT p(theta+180, t)
+# - the detector coordinate reverses, and assuming otherwise is exactly how a
+# sinogram ends up flipped. The last run is the same physical line as the first.
+/run/verbose      0
+/event/verbose    0
+/tracking/verbose 0
+/cttwin/phantom bars
+/run/initialize
+/cttwin/scan/angle        30 deg
+/cttwin/scan/translation  60 mm
+/run/beamOn 100000
+/cttwin/scan/angle       -30 deg
+/cttwin/scan/translation  60 mm
+/run/beamOn 100000
+/cttwin/scan/angle        30 deg
+/cttwin/scan/translation -60 mm
+/run/beamOn 100000
+/cttwin/scan/angle       -30 deg
+/cttwin/scan/translation -60 mm
+/run/beamOn 100000
+/cttwin/scan/angle       210 deg
+/cttwin/scan/translation -60 mm
+/run/beamOn 100000

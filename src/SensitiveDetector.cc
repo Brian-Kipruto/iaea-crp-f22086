@@ -6,6 +6,10 @@
 #include "G4Gamma.hh"
 #include "G4StepPoint.hh"
 #include "G4ThreeVector.hh"
+#include "G4EventManager.hh"
+#include "G4Event.hh"
+#include "G4PrimaryVertex.hh"
+#include "G4PrimaryParticle.hh"
 
 #include <cmath>
 
@@ -66,16 +70,50 @@ G4bool SensitiveDetector::ProcessHits(G4Step* step, G4TouchableHistory*)
   // An energy-window count (what a real NaI photopeak would actually deliver)
   // is a different, detector-response question and belongs with the NaI model
   // in Pass 6+, not here.
+  //
+  // ─── CTTWIN START: Pass 4 — gate generalised off the +x axis ───
+  // Pass 3 compared the arriving direction against a hard-coded +x and the
+  // energy against the Cs-137 constant. Both were correct only for a source
+  // that never moves and never changes energy, and would have silently
+  // collapsed the unscattered count to zero the moment the beam was steered.
+  //
+  // The launch state is now read from the event's OWN primary vertex, so it
+  // cannot drift out of sync with PrimaryGeneratorAction — no constant to keep
+  // updated, no second definition of the beam. The fallback values below are
+  // only reached if an event somehow has no primary.
+  //
+  // Under ADR 0005 the beam does not in fact move (the phantom carries the scan
+  // transform), so this change is a provable NO-OP today: the Pass 1-3
+  // regression anchors must reproduce exactly. That is the point — it is
+  // future-proofing whose correctness is testable now rather than in Pass 6.
   if (track->GetParentID() == 0) {
-    const G4double dE = std::fabs(pre->GetKineticEnergy() -
-                                  Physics::kCs137GammaEnergy);
-    const G4double dCos = 1.0 - pre->GetMomentumDirection().x();
+    G4double      launchEnergy = Physics::kCs137GammaEnergy;
+    G4ThreeVector launchDir(1.0, 0.0, 0.0);
+
+    const G4Event* event =
+        G4EventManager::GetEventManager()->GetConstCurrentEvent();
+    if (event && event->GetNumberOfPrimaryVertex() > 0) {
+      if (const G4PrimaryVertex* vertex = event->GetPrimaryVertex(0)) {
+        if (const G4PrimaryParticle* primary = vertex->GetPrimary(0)) {
+          launchEnergy = primary->GetKineticEnergy();
+          launchDir    = primary->GetMomentumDirection();
+        }
+      }
+    }
+
+    const G4double dE = std::fabs(pre->GetKineticEnergy() - launchEnergy);
+
+    // Generalises Pass 3's `1 - dir.x()`: the dot product of two unit vectors
+    // is 1 when they coincide, and launchDir is (1,0,0) today, so this reduces
+    // to exactly the old expression.
+    const G4double dCos = 1.0 - pre->GetMomentumDirection().dot(launchDir);
 
     if (dE < Physics::kUnscatteredEnergyTol &&
         dCos < Physics::kUnscatteredCosTol) {
       fUnscatteredCount++;
     }
   }
+  // ─── CTTWIN END ───
   // ─── CTTWIN END ───
 
   return true;

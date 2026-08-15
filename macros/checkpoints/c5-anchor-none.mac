@@ -1,0 +1,11 @@
+# Checkpoint 5a - Pass 1/2/3 regression anchor, empty world.
+# No /cttwin/scan/... commands: defaults are theta=0, t=0, and the theta=0
+# placement path is identical to Pass 3's.
+# EXPECT 0.99600 total, 0.99580 unscattered. Drift here means the transform or
+# the generalised unscattered gate is NOT the no-op it is supposed to be.
+/run/verbose      0
+/event/verbose    0
+/tracking/verbose 0
+/cttwin/phantom none
+/run/initialize
+/run/beamOn 10000

@@ -1,0 +1,9 @@
+# Checkpoint 5b - regression anchor, pipe phantom.
+# EXPECT 0.47950 total, 0.47060 unscattered. Pass 3 saw pipe move 2 counts
+# against 1 sigma = 69, so "within 1 sigma" is a pass.
+/run/verbose      0
+/event/verbose    0
+/tracking/verbose 0
+/cttwin/phantom pipe
+/run/initialize
+/run/beamOn 10000

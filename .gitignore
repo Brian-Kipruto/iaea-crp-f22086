@@ -47,3 +47,6 @@ venv/
 # Local environment overrides
 .env
 local.cmake
+
+# Pass 5 scan logs
+*_scan.log

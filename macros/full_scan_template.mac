@@ -40,6 +40,18 @@
 #   suffices for the entire scan; a full open-beam sweep would just be that one
 #   number resampled. Do not skip it, and do not scan it.
 
+# THREADS ARE PINNED, AND PARALLELISM IS OVER ANGLES.
+#   Pass 5 (D4). Angles are independent processes, so a pool of single-threaded
+#   workers beats one MT process per angle: no per-run thread merge, no
+#   start-up cost, and linear scaling. It also removes a variable nobody here
+#   has measured — whether Geant4 11.2's event seeding is thread-count
+#   independent depends on seedOncePerCommunication, and if it is not, then the
+#   Pass 1-4 regression anchors are only reproducible at a fixed thread count.
+#   Fixing the count sidesteps the question entirely.
+#   /run/numberOfThreads is PRE-INIT ONLY, hence its position here.
+#   `run_scan.py --anchors` verifies the anchors still hold at this setting.
+/run/numberOfThreads 1
+
 /run/verbose      0
 /event/verbose    0
 /tracking/verbose 0

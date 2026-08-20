@@ -1,7 +1,7 @@
 # Pass 5 validation — the reconstruction ladder
 
 **Date:** 2026-08-20
-**Code commit:** `80d07a2`
+**Code commit:** `<fill after push>`
 **Verdict:** ✅ all seven checkpoints passed. **NUTECH abstract claim 2 banked.**
 
 Seven rungs, each with an expected number written before it was run. Two
@@ -180,6 +180,43 @@ consistent-with rather than proven.
 **SIRT is also insensitive to the ROI definition** — mean |dev| 0.55% at both a
 1 mm and a 2 mm margin, where FBP moved 2 percentage points on the same change.
 Flat interiors versus structured ones.
+
+---
+
+## Closing a Pass 4 open question — the off-axis chord
+
+Pass 4 flagged pipe transmission at t = 40 mm sitting 0.46% below the
+hand-computed prediction (2.46σ) against 0.13% on-axis (0.90σ), and assigned
+it to Pass 5. Pooling the package-A pipe scan over 180 angles gives ~1.8e7
+events per column — forty times Pass 4's statistics:
+
+| t | chord | measured p | vs NIST mu | vs Pass 3 fitted mu |
+|---|---|---|---|---|
+| 0 mm | 13.10 mm | 0.75488 | −0.127% (−3.8 sigma) | **+0.013%** |
+| +40 mm | 16.30 mm | 0.93882 | −0.150% (−4.8 sigma) | **−0.010%** |
+| −40 mm | 16.30 mm | 0.93873 | −0.160% (−5.1 sigma) | **−0.019%** |
+
+**It is not an off-axis effect.** The deviation is the same in relative terms
+at both positions — path-length independent as a *fraction* of p, which is the
+signature of a small error in mu. And it is one already measured: Pass 3 fitted
+mu = 0.5761682 /cm against NIST 0.5769780, **−0.140%**. Re-scoring against the
+fitted value collapses every residual to under ±0.02%.
+
+So this is the known offset between Geant4's transport at 661.657 keV and the
+NIST tabulation, and it is global rather than geometric. Pass 4 saw two
+different significances from one cause because the chord is longer at t = 40 and
+the error bar therefore tighter.
+
+**The reasoning error worth recording.** Pass 4 concluded *"it does not scale
+with path length, so it is not a mu/rho error."* That is backwards: p = mu x L,
+so a mu error gives a constant deviation as a *fraction* of p. A constant
+relative deviation is what a mu error looks like; a constant *absolute*
+deviation is what would rule one out.
+
+This is the third independent measurement of the −0.14% offset (Pass 3's slab
+fit, and the pipe here at two positions). It also means the sub-1%
+reconstruction deviations above, quoted against NIST, carry ~0.14% of it by
+construction.
 
 ---
 
